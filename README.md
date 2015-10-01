@@ -43,7 +43,7 @@ You will probably want these Backbone views:
 
 * MyMentionsView: a list of all the posts made which mention the current user (by including @username).
 
-Each listed post should display the post's text (with embedded mentions), author, and timestamp as a formatted of a string (something like "Jan 1 2035, 12:34:56").  If you wish, you may use a Backbone view for each individual Post, but since Posts can't be edited, there isn't much benefit in a Backbone view.
+Each listed post should display the post's text (with embedded mentions), author, and timestamp as a formatted of a string (something like "Jan 1 2035, 12:34:56").  To turn the Unix timestamp into a more nicely formatted string, you'll probably want to check out some of the methods of the Date object. If you wish, you may use a Backbone view for each individual Post, but since Posts can't be edited, there isn't much benefit in a Backbone view.
 
 Notice that there is no Backbone `LoginView`!  The login screen will not be handled by Backbone; instead, it will be rendered by the server as an alternative to the main application page (which includes the Backbone views).
 
@@ -60,6 +60,10 @@ Your server will need the routes both to render HTML and to send JSON data.
 	Accept a login POST which includes an attempted username and password.  If the login is successful, render the HTML for the user page, which will include the Backbone code and render all Backbone views.  If login is unsuccessful, redirect back to the main route "/".
 * POST /users
 	Register a new username and password, then render the HTML for that users' page.
+
+##### A word on sending POST requests:
+
+At this point, you should have two possible ways to send POST requests from the client to the server in your arsenal: AJAX and forms. If you decide to use a form, you can do that with a `submit` button inside the form and use of the form's `action` and `method` attributes.
 
 #### Routes which send and receive JSON data:
 
