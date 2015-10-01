@@ -17,15 +17,14 @@ Let's first consider the client-side Backbone components.
 You will probably want these models:
 
 * User:
-	* username: a name unique to each user.
-	* bio: a very brief description of the user
-	* password: the user's password, stored but never displayed.
+	* `username`: a name unique to each user.
+	* `bio`: a very brief description of the user
+	* `password`: the user's password, stored but never displayed.
 
-* Post
-	* text: the body of the post.  You may choose to limit it to a fixed number of characters.
-	* author: the username of the post's author
-	* mentions: an array of usernames mentioned (as `@username`) within the text of the post.
-	* timestamp: the "Unix" time (a single integer) recording when the post was submitted. You can get this by calling `Date.now()`
+* Post:
+	* `text`: the body of the post.  You may choose to limit it to a fixed number of characters.
+	* `author`: the username of the post's author.
+	* `timestamp`: the "Unix" time (a single integer) recording when the post was submitted. You can get this by calling `Date.now()`
 
 You will have several Backbone collections of posts, but no collection of Users!  Instead, you should have a single user model representing the user who has logged in.
 
@@ -33,17 +32,19 @@ You will have several Backbone collections of posts, but no collection of Users!
 
 You will probably want these Backbone views:
 
-* UserView: displays the user's public profile (username and bio), a logout button, and the four views below.
+* `UserView`: displays the user's public profile (username and bio), a logout button, and all views below.
 
-* CreatePostView: display a text input area and a "Post It" button which submits the new post.
+* `CreatePostView`: display a text input area and a "Post It" button which submits the new post.
 
-* RecentPostsView: a list of the 5 most recent posts made by anyone.
+* `RecentPostsView`: a list of the 5 most recent posts made by anyone.
 
-* MyPostsView: a list of all the posts made by the current user.
+* `MyPostsView`: a list of all the posts made by the current user.
 
-* MyMentionsView: a list of all the posts made which mention the current user (by including @username).
+When you add the bonus "mentions" feature, you'll also need:
 
-Each listed post should display the post's text (with embedded mentions), author, and timestamp as a formatted of a string (something like "Jan 1 2035, 12:34:56").  To turn the Unix timestamp into a more nicely formatted string, you'll probably want to check out some of the methods of the Date object. If you wish, you may use a Backbone view for each individual Post, but since Posts can't be edited, there isn't much benefit in a Backbone view.
+* `MyMentionsView`: a list of all the posts made which mention the current user (by including @username).
+
+Each listed post should display the post's text (with embedded mentions), author, and timestamp as a formatted of a string (something like "Jan 1 2035, 12:34:56").  To turn the Unix timestamp into a more nicely formatted string, you'll probably want to check out some of the methods of the Date object. If you wish, you may use a Backbone view for each individual Post, but since Posts can't be edited, there isn't much benefit in a Backbone view over a simple DOM element.
 
 Notice that there is no Backbone `LoginView`!  The login screen will not be handled by Backbone; instead, it will be rendered by the server as an alternative to the main application page (which includes the Backbone views).
 
@@ -54,28 +55,40 @@ Your server will need the routes both to render HTML and to send JSON data.
 
 #### Routes which deliver HTML (a new client):
 
-* GET /
+* `GET /`
 	Render the HTML for the login page
-* POST /
+
+* `POST /`
 	Accept a login POST which includes an attempted username and password.  If the login is successful, render the HTML for the user page, which will include the Backbone code and render all Backbone views.  If login is unsuccessful, redirect back to the main route "/".
-* POST /users
+
+* `POST /users`
 	Register a new username and password, then render the HTML for that users' page.
 
 ##### A word on sending POST requests:
 
-At this point, you should have two possible ways to send POST requests from the client to the server in your arsenal: AJAX and forms. If you decide to use a form, you can do that with a `submit` button inside the form and use of the form's `action` and `method` attributes.
+At this point, you know two different ways to send POST requests from the client to the server: 
+
+* Using a form, which makes a normal http POST request and replaces the client page with whatever the server sends back.  To do this, but a `submit` button inside the form, set the `method` attribute to 'POST', and set the `action` attribute to the route on the server which should handle the request.
+
+* AJAX, which includes a Backbone model's `save()` method.  This does *not* replace the current page with new HTML, but merely retrieves some JSON data to update your model.
+
+Make sure you're using the right type of POST request in the right place!
 
 #### Routes which send and receive JSON data:
 
-* PUT /users/:username
+* `PUT /users/:username`
 	Update the user's profile and/or password
-* GET /users/:username
+
+* `GET /users/:username`
 	Get a user's profile (minus the password!)
-* GET /posts/:username
+
+* `GET /posts/:username`
 	Get all posts by a particular user
-* POST /posts
+
+* `POST /posts`
 	Submit a new post
-* GET /recent
+
+* `GET /recent`
 	Get some number of recent posts
 
 Notice that there is neither a `GET /users` nor a `GET /posts` route --- you cannot fetch the entire collection of users or posts.   That would be problematic for both security and performance.  Instead, there are two (or more) different routes to get different subsets of the posts stored on the server.
