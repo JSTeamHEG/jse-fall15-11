@@ -66,5 +66,6 @@ module.exports = {
 	get:get,
 	put: put,
 	post: post,
-	show: show
+	show: show,
+	database: database
 }
