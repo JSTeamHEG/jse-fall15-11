@@ -1,6 +1,10 @@
 var express = require('express');
 var router = express.Router();
-var db = require("../database.js");
+
+var config = require('./config');
+var orch = require('orchestrate');
+var db = orch(config.dbkey);
+//var db = require("../database.js");
 /* GET home page. */
 router.get('/', function(req, res, next) {
   var user = db.get("users", "Tom");
